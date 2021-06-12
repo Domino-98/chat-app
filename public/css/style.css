@@ -29,7 +29,7 @@ body {
 
 .heading-1 {
     text-transform: uppercase;
-    margin-top: 3rem;
+    margin-top: 2rem;
     font-size: 4rem;
     color: #5fd2ff;
     text-shadow: 0 1px 0 #00b7ff,
@@ -59,7 +59,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 4rem;
+    margin-top: 2.5rem;
     padding: 2.5rem 0;
     border-radius: 1rem;
     background-color: #eeeeee;
@@ -103,6 +103,7 @@ body {
     color: #fff;
     transition: all .2s;
     text-transform: uppercase;
+    outline: none;
 }
 
 .send:active {
@@ -116,15 +117,31 @@ body {
 }
 
 .chat-messages {
+    height: 35vh;
     width: 600px;
     max-width: 600px;
     display: flex;
     flex-direction: column;
-    margin-top: 4rem;
+    margin-top: 3.5rem;
     padding: 2.5rem 3rem;
     border-radius: 1rem;
     background-color: #eeeeee;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+
+    overflow-y: scroll;
+    scrollbar-color: #00aeff #fff;
+    scrollbar-width: thin;
+}
+
+.message-box {
+    border-radius: 1rem;
+    width: -moz-fit-content;
+    width: fit-content;
+    block-size: fit-content;
+    background-color: #00aeff;
+    padding: .75rem 1.5rem;
+    margin: 1rem;
+    color: #fff;
 }
 
 .name {
@@ -135,4 +152,24 @@ body {
 
 .message {
     font-size: 1.4rem;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+.no-messages {
+    color: #cf0000;
+    font-size: 2rem;
+    text-align: center;
 }
