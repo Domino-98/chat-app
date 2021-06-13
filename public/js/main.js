@@ -72,12 +72,17 @@ window.onload=() => {
             message: `${chatMsg.value}`
         };
 
-        // Jeżeli inputy wiadomości są puste, zostanie dodany alert. Dalsze instrukcje nie zostaną wykonane
-        if (message.name==='') {
+        // Wszystkie znaki prócz ciągu białych znaków
+        const regex = /\S+/;
+
+        // Sprawdzenie za pomocą wyrażenia regularnego czy w inpucie są wpisane tylko spacje. Jeżeli tak, zostanie dodany alert. Dalsze instrukcje nie zostaną wykonane
+        if (!message.name.match(regex)) {
             chatName.classList.add('input-alert');
+            chatName.value = '';
             return chatName.placeholder='Wpisz nazwę!';
-        } else if (message.message==='') {
+        } else if (!message.message.match(regex)) {
             chatMsg.classList.add('input-alert');
+            chatMsg.value = '';
             return chatMsg.placeholder='Wpisz treść wiadomości!';
         }
 
