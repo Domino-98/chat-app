@@ -1,9 +1,16 @@
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
+
 // Załadowanie wszystkich modułów. Require przyjmuje string, który określa nazwę biblioteki lub ścieżkę, a zwraca to co eksportuje dany moduł
 const express = require('express');
 const path = require('path');
 const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const mongoose = require('mongoose');
+
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/chat-app';
 
 // Serwowanie plików statycznych
 app.use(express.static(path.join(__dirname, 'public')));
@@ -29,6 +36,15 @@ app.post('/messages', (req, res) => {
 // Uruchomi się gdy, klient zostanie połączony
 io.on('connection', socket => {
     console.log('User connected');
+});
+
+// Połączenie z bazą danych MongoDB
+mongoose.connect(dbUrl, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+}, err => {
+    console.log('Database connected');
 });
 
 const port = 3000;
