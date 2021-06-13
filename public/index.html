@@ -8,6 +8,7 @@
     <title>Chat app</title>
     <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
+    <script src="../socket.io/socket.io.js"></script>
 </head>
 
 <body>
@@ -34,78 +35,16 @@
 
         <div class="chat-messages">
 
-            <!-- <h3 class="name">Dominik</h3>
-            <p class="message">Witam</p> -->
+            <!-- <div class="message-box">
+                <h3 class="name">Dominik</h3>
+                <p class="message">Hello</p>
+            </div> -->
 
         </div>
 
     </div>
 
-    <script>
-
-        window.onload=() => {
-
-            const chatMsgBox=document.querySelector('.chat-messages')
-            const chatName=document.querySelector('.name-input');
-            const chatMsg=document.querySelector('.message-input');
-            const send=document.querySelector('.send');
-
-            function addMessages(message) {
-                chatMsgBox.innerHTML+=`
-                <div class="message-box">
-                <h3 class="name">${message.name}</h3>
-                <p class="message">${message.message}
-                </div>
-                `;
-            }
-
-            // Funkcja pobierające dane z adresu
-            function getMessages() {
-                fetch('http://localhost:3000/messages')
-                    .then(function (data) {
-                        return data.json();
-                    })
-                    .then(function (messages) {
-                        if (messages=='') {
-                            chatMsgBox.innerHTML+=`
-                                <p class="no-messages">Brak wiadomości</p>
-                            `;
-                        }
-                        messages.forEach(addMessages);
-                    })
-            }
-
-            function postMessage(message) {
-                fetch('http://localhost:3000/messages', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(message)
-                }).then(res => {
-                    console.log('Request complete! response:', res);
-                });
-            }
-
-            send.addEventListener('click', () => {
-                let message={
-                    name: `${chatName.value}`,
-                    message: `${chatMsg.value}`
-                };
-                postMessage(message);
-                chatMsg.value='';
-                chatMsgBox.scrollTop=chatMsgBox.scrollHeight;
-            });
-
-            getMessages();
-
-            setTimeout(function () {
-                chatMsgBox.scrollTop=chatMsgBox.scrollHeight;
-            }, 1000);
-
-        }
-
-    </script>
+    <script src="js/main.js"></script>
 
 </body>
 
