@@ -12,9 +12,12 @@ window.onload=() => {
         let heightDiff = chatMsgBox.scrollHeight - chatMsgBox.scrollTop;
 
         chatMsgBox.innerHTML+=`
-        <div class="message-box">
-        <h3 class="name">${message.name}</h3>
-        <p class="message">${message.message}</p>
+        <div class="wrapper">
+            <div class="message-box">
+            <h3 class="name">${message.name}</h3>
+            <p class="message">${message.message}</p>
+            </div>
+            <p class="date">${message.date}</p>
         </div>
         `;
 

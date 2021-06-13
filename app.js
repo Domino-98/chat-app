@@ -9,6 +9,11 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const mongoose = require('mongoose');
+const dateFormat = require('dateformat');
+dateFormat.i18n = {
+    monthNames: ["Sty", "Lut", "Mar", "Kwi", "Maj", "Cze", "Lip", "Sie", "Wrz", "Paź", "Lis", "Gru", "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień",
+    ],
+}  
 
 const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/chat-app';
 
@@ -16,6 +21,7 @@ const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/chat-app';
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.json());
+
 
 // Utworzenie modelu wiadomości
 const Message = mongoose.model('Message', {
@@ -26,7 +32,8 @@ const Message = mongoose.model('Message', {
     message: {
         type: String,
         required: true
-    }
+    },
+    date: String
 });
 
 // Funkcja pozwala zdefiniować routing dla żądań GET do danego URL. Wiadomości wyszukane w bazie danych są przesyłane do danego URL z którego są pobierane wiadomości
@@ -38,13 +45,21 @@ app.get('/messages', (req, res) => {
 
 // Obsłużenie żądania POST dla URL localhost:3000/messages. 
 app.post('/messages', (req, res) => {
-    // Utworzenie nowej wiadomości do której przesyłany jest obiekt z żądania. req.body przechowuje parametry, które są wysyłane od klienta jako część żądania POST.
-    const message = new Message(req.body);
+    // Utworzenie aktualnej daty oraz sformatowanie jej
+    let now = new Date();
+    now = dateFormat(now, "d mmm HH:MM");
+    // Utworzenie nowej wiadomości do której przesyłany jest obiekt z żądania oraz aktualna data
+    const message = new Message({'name': req.body.name, 'message': req.body.message, 'date': now});
+
     message.save(err => {
         if (err)
         res.sendStatus(500);
         // Podane req.body (wiadomość) zostanie emitowane do wszystkich userów
-        io.emit('message', req.body);
+        io.emit('message', {
+            'name': req.body.name,
+            'message': req.body.message,
+            'date': message.date
+        });
         res.sendStatus(200);
     });
 });
