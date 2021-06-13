@@ -29,12 +29,11 @@ const Message = mongoose.model('Message', {
     }
 });
 
-// Tablica zawierająca obiekty wiadomości
-const messages = [];
-
-// Funkcja pozwala zdefiniować routing dla żądań GET do danego URL
+// Funkcja pozwala zdefiniować routing dla żądań GET do danego URL. Wiadomości wyszukane w bazie danych są przesyłane do danego URL z którego są pobierane wiadomości
 app.get('/messages', (req, res) => {
-    res.send(messages);
+    Message.find({}, (err, messages) => {
+        res.send(messages);
+    });
 });
 
 // Obsłużenie żądania POST dla URL localhost:3000/messages. 
@@ -44,10 +43,8 @@ app.post('/messages', (req, res) => {
     message.save(err => {
         if (err)
         res.sendStatus(500);
-        // Do tablicy 'messages' jest przesyłany obiekt wiadomości z właściwościami name oraz message
-        messages.push(message);
         // Podane req.body (wiadomość) zostanie emitowane do wszystkich userów
-        io.emit('message', message);
+        io.emit('message', req.body);
         res.sendStatus(200);
     });
 });

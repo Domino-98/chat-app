@@ -8,7 +8,7 @@ window.onload=() => {
     const send=document.querySelector('.send');
 
     // Dodanie wiadomości do dokumentu HTML
-    function addMessages(message) {
+    function addMessage(message) {
         let heightDiff = chatMsgBox.scrollHeight - chatMsgBox.scrollTop;
 
         chatMsgBox.innerHTML+=`
@@ -24,15 +24,15 @@ window.onload=() => {
         }
     }
 
-    // Funkcja pobierająca dane z adresu, która na końcu wywołuje funkcje addMessages
+    // Funkcja pobierająca dane z adresu, która na końcu wywołuje funkcje addMessage
     function getMessages() {
         fetch('http://localhost:3000/messages')
             .then(function (data) {
                 return data.json();
             })
             .then(function (messages) {
-                // Wywołanie funkcji addMessages pętlą forEach tyle razy ile jest wiadomości
-                messages.forEach(addMessages);
+                // Wywołanie funkcji addMessage pętlą forEach tyle razy ile jest wiadomości
+                messages.forEach(addMessage);
             })
     }
 
@@ -86,5 +86,5 @@ window.onload=() => {
         chatMsgBox.scrollTop=chatMsgBox.scrollHeight;
      }, 1000);
 
-    socket.on('message', addMessages);
+    socket.on('message', addMessage);
 }
