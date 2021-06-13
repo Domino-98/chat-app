@@ -17,6 +17,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.json());
 
+// Utworzenie modelu wiadomości
+const Message = mongoose.model('Message', {
+    name: {
+        type: String,
+        required: true
+    },
+    message: {
+        type: String,
+        required: true
+    }
+});
+
 // Tablica zawierająca obiekty wiadomości
 const messages = [];
 
@@ -25,12 +37,19 @@ app.get('/messages', (req, res) => {
     res.send(messages);
 });
 
-// Obsłużenie żądania POST dla URL localhost:3000/messages. Do tablicy 'messages' jest przesyłany obiekt wiadomości z właściwościami name oraz message
+// Obsłużenie żądania POST dla URL localhost:3000/messages. 
 app.post('/messages', (req, res) => {
-    messages.push(req.body);
-    // Podane req.body (wiadomość) zostanie emitowane do wszystkich userów
-    io.emit('message', req.body);
-    res.sendStatus(200);
+    // Utworzenie nowej wiadomości do której przesyłany jest obiekt z żądania. req.body przechowuje parametry, które są wysyłane od klienta jako część żądania POST.
+    const message = new Message(req.body);
+    message.save(err => {
+        if (err)
+        res.sendStatus(500);
+        // Do tablicy 'messages' jest przesyłany obiekt wiadomości z właściwościami name oraz message
+        messages.push(message);
+        // Podane req.body (wiadomość) zostanie emitowane do wszystkich userów
+        io.emit('message', message);
+        res.sendStatus(200);
+    });
 });
 
 // Uruchomi się gdy, klient zostanie połączony
