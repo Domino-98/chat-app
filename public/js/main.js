@@ -49,6 +49,22 @@ window.onload=() => {
         });
     }
 
+    // Zamienia nowe linie dla każdego pola textarea na pusty string
+    constrainInput = event => { 
+        event.target.value = event.target.value.replace(/[\r\n\v]+/g, '')
+    }
+      
+    document.querySelectorAll('textarea').forEach(el => {
+        el.addEventListener('keyup', constrainInput)
+    })
+
+    // Możliwośc wysłania wiadomości po wciśnięciu enter
+    chatMsg.addEventListener("keyup", function(event) {
+        if (event.keyCode === 13) {
+          send.click();
+        }
+    });
+
     // Zdarzenie click dla przycisku send, który tworzy nową wiadomość z wartościami tekstowymi podanymi do inputów
     send.addEventListener('click', () => {
         let message={
@@ -77,6 +93,8 @@ window.onload=() => {
             chatMsgBox.scrollTop=chatMsgBox.scrollHeight;
          }, 100);    
     });
+
+
 
     // Pobranie wszystkich wiadomości
     getMessages();
