@@ -54,7 +54,7 @@ body {
 }
 
 .chat-box {
-    width: 600px;
+    width: 100%;
     max-width: 600px;
     display: flex;
     flex-direction: column;
@@ -118,7 +118,7 @@ body {
 
 .chat-messages {
     height: 275px;
-    width: 600px;
+    width: 100%;
     max-width: 600px;
     display: flex;
     flex-direction: column;
@@ -199,5 +199,15 @@ body {
 
     100% {
         background-color: #76d4ff;
+    }
+}
+
+@media only screen and (max-width: 650px) {
+    .chat-box {
+        width: 90%;
+    }
+
+    .chat-messages {
+        width: 90%;
     }
 }
