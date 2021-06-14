@@ -211,3 +211,9 @@ body {
         width: 90%;
     }
 }
+
+.feedback-message {
+    font-size: 1.4rem;
+    margin: 1rem .5rem;
+    color: #4b4b4b;
+}

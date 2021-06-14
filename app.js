@@ -67,6 +67,11 @@ app.post('/messages', (req, res) => {
 // Uruchomi się gdy, klient zostanie połączony
 io.on('connection', socket => {
     console.log('User connected');
+
+    // Funkcja przechwytuje dane (nazwa użytkownika) wysłane z poziomu klienta, które następnie emituje do wszystkich innych klientów (broadcast)
+    socket.on('typing', data => {
+        socket.broadcast.emit('typing', data);
+    });
 });
 
 // Połączenie z bazą danych MongoDB

@@ -3,15 +3,17 @@ const socket=io();
 window.onload=() => {
 
     const chatMsgBox=document.querySelector('.chat-messages')
+    const msgBox=document.querySelector('.messages')
     const chatName=document.querySelector('.name-input');
     const chatMsg=document.querySelector('.message-input');
     const send=document.querySelector('.send');
-
+    const feedback=document.querySelector('.feedback');
+    
     // Dodanie wiadomości do dokumentu HTML
     function addMessage(message) {
-        let heightDiff = chatMsgBox.scrollHeight - chatMsgBox.scrollTop;
+        let scrollDiff = chatMsgBox.scrollHeight - chatMsgBox.scrollTop;
 
-        chatMsgBox.innerHTML+=`
+        msgBox.innerHTML+=`
         <div class="wrapper">
             <div class="message-box">
             <h3 class="name">${message.name}</h3>
@@ -21,8 +23,10 @@ window.onload=() => {
         </div>
         `;
 
+        feedback.innerHTML = '';
+
         // Okno czatu ze strony innego użytkownika będzie przewijane, jeżeli zjedzie on na sam dół
-        if (heightDiff < 300) {
+        if (scrollDiff < 300) {
             chatMsgBox.scrollTop=chatMsgBox.scrollHeight;
         }
     }
@@ -99,10 +103,8 @@ window.onload=() => {
 
         setTimeout(function(){ 
             chatMsgBox.scrollTop=chatMsgBox.scrollHeight;
-         }, 100);    
+         }, 100);
     });
-
-
 
     // Pobranie wszystkich wiadomości
     getMessages();
@@ -110,7 +112,37 @@ window.onload=() => {
     // Okno czatu zostanie przewinięte na sam dół po 1s
     setTimeout(function(){ 
         chatMsgBox.scrollTop=chatMsgBox.scrollHeight;
-     }, 1000);
+    }, 1000);
 
+    // Zmienna timeout będzie przechowywać 2 argumenty. 1 funkcja zwrotna timeoutFunction, która zmienia wartość typing na false oraz emituje na serwer wartość false. 2 argument jest to czas po którym ma zostać wywołana w ms
+    let timeout;
+
+    function timeoutFunction() {
+        typing = false;
+        socket.emit("typing", false);
+    }
+
+    // Dodanie nasłuchiwania na zdarzenie keyup (wciśnięcie klawisza) dla pola tekstowego message. Wartość typing zostaje zmieniona na true, na serwer zostaje emitowana wpisana nazwa użytkownika, a następnie funkcja clearTimeout usuwa timeout do którego przypisana jest funkcja setTimeout
+    chatMsg.addEventListener('keyup', () => {
+        typing = true;
+        socket.emit('typing', chatName.value);
+        clearTimeout(timeout);
+        timeout = setTimeout(timeoutFunction, 2000);
+    });
+
+    // Dodanie nasłuchiwania na zdarzenie typing (wpisywanie tekstu). Z serwera są przesyłane dane (w tym przypadku nazwa użytkownika), a następnie do elementu feedback dodawany jest paragraf informujący o pisanej wiadomości razem z nazwą użytkownika
+    socket.on('typing', data => {
+        let scrollDiff = chatMsgBox.scrollHeight - chatMsgBox.scrollTop;
+        if (data) {
+            feedback.innerHTML = `<p class="feedback-message"><em>${data} pisze wiadomość...</em></p>`;
+            if (scrollDiff < 300) {
+                chatMsgBox.scrollTop=chatMsgBox.scrollHeight;
+            }
+        } else {
+            feedback.innerHTML = '';
+        }
+    });
+
+    // Funkcja zostanie wywołana, kiedy socket połączony z serwerem emituje wiadomość
     socket.on('message', addMessage);
 }
