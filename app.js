@@ -1,3 +1,4 @@
+// Plik konfiguracyjny .env z linkiem do połączenia z bazą danych będzie pobierany tylko wtedy, gdy aplikacja jest w trakcie tworzenia (nie jest w fazie produkcji)
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 }
@@ -10,6 +11,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const mongoose = require('mongoose');
 const dateFormat = require('dateformat');
+// Ustawienie niestandardowych nazw miesięcy w module dateFormat
 dateFormat.i18n = {
     monthNames: ["Sty", "Lut", "Mar", "Kwi", "Maj", "Cze", "Lip", "Sie", "Wrz", "Paź", "Lis", "Gru", "Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec", "Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień",
     ],
@@ -20,6 +22,7 @@ const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/chat-app';
 // Serwowanie plików statycznych
 app.use(express.static(path.join(__dirname, 'public')));
 
+// jest to metoda, która rozpoznaje przychodzący obiekt żądania jako obiekt JSON
 app.use(express.json());
 
 
@@ -43,9 +46,9 @@ app.get('/messages', (req, res) => {
     });
 });
 
-// Obsłużenie żądania POST dla URL localhost:3000/messages. 
+// Obsłużenie żądania POST dla URL localhost:3000/messages 
 app.post('/messages', (req, res) => {
-    // Utworzenie aktualnej daty oraz sformatowanie jej
+    // Utworzenie aktualnej daty przy tworzeniu wiadomości oraz sformatowanie jej
     let now = new Date();
     now = dateFormat(now, "d mmm HH:MM");
     // Utworzenie nowej wiadomości do której przesyłany jest obiekt z żądania oraz aktualna data

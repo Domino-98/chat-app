@@ -1,7 +1,8 @@
+// Przypisanie do zmiennej socket modułu Socket.io
 const socket=io();
 
 window.onload=() => {
-
+    // Pobranie wszystkich potrzebnych elementów z dokumentu HTML
     const chatMsgBox=document.querySelector('.chat-messages')
     const msgBox=document.querySelector('.messages')
     const chatName=document.querySelector('.name-input');
@@ -11,6 +12,7 @@ window.onload=() => {
     
     // Dodanie wiadomości do dokumentu HTML
     function addMessage(message) {
+        // Zmienna scrollDiff przechowuje różnicę scrollHeight (Wysokość całej zawartości okna)  i scrollTop (zwraca liczbę pikseli zawartości okna przewijanego pionowo).
         let scrollDiff = chatMsgBox.scrollHeight - chatMsgBox.scrollTop;
 
         msgBox.innerHTML+=`
@@ -23,6 +25,7 @@ window.onload=() => {
         </div>
         `;
 
+        // Notyfikacja zostanie usunięta po wysłaniu wiadomości
         feedback.innerHTML = '';
 
         // Okno czatu ze strony innego użytkownika będzie przewijane, jeżeli zjedzie on na sam dół
@@ -60,19 +63,20 @@ window.onload=() => {
     constrainInput = event => { 
         event.target.value = event.target.value.replace(/[\r\n\v]+/g, '')
     }
-      
+
+    // Wywołuje funkcje constrainInput po wciśnięciu entera
     document.querySelectorAll('textarea').forEach(el => {
         el.addEventListener('keyup', constrainInput)
     })
 
-    // Możliwośc wysłania wiadomości po wciśnięciu enter
+    // Możliwośc wysłania wiadomości po wciśnięciu enter. Metoda click jest wtedy wywoływana na przycisku
     chatMsg.addEventListener("keyup", function(event) {
         if (event.keyCode === 13) {
           send.click();
         }
     });
 
-    // Zdarzenie click dla przycisku send, który tworzy nową wiadomość z wartościami tekstowymi podanymi do inputów
+    // Zdarzenie click dla przycisku send, który tworzy nowy obiekt wiadomości z wartościami tekstowymi podanymi do inputów
     send.addEventListener('click', () => {
         let message={
             name: `${chatName.value}`,
@@ -82,7 +86,7 @@ window.onload=() => {
         // Wszystkie znaki prócz ciągu białych znaków
         const regex = /\S+/;
 
-        // Sprawdzenie za pomocą wyrażenia regularnego czy w inpucie są wpisane tylko spacje. Jeżeli tak, zostanie dodany alert. Dalsze instrukcje nie zostaną wykonane
+        // Sprawdzenie za pomocą wyrażenia regularnego czy w inpucie są wpisane tylko spacje. Jeżeli tak, zostanie dodana klasa alert do pola tekstowego. Dalsze instrukcje nie zostaną wykonane
         if (!message.name.match(regex)) {
             chatName.classList.add('input-alert');
             chatName.value = '';
@@ -95,6 +99,8 @@ window.onload=() => {
 
         // Wywołanie funkcji postMessage z przesłanym argumentem wiadomości
         postMessage(message);
+
+        // Jeżeli wiadomość zostanie przesłana pomyślnie, pole tekstowe wiadomości zostanie wyzerowane, zmieni się placeholder 
         chatMsg.value='';
         chatName.placeholder='Nazwa';
         chatMsg.placeholder='Wiadomość';
