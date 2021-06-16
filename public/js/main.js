@@ -112,6 +112,7 @@ window.onload=() => {
          }, 100);
     });
 
+
     // Pobranie wszystkich wiadomości
     getMessages();
 
@@ -151,4 +152,17 @@ window.onload=() => {
 
     // Funkcja zostanie wywołana, kiedy socket połączony z serwerem emituje wiadomość
     socket.on('message', addMessage);
+
+    // Funkcja usuwa alert, jeżeli pole tekstowe jest różne od pustego stringa
+    const removeAlert = () => {
+        if (chatName.value !== '') {
+            chatName.classList.remove('input-alert');
+        }
+        if (chatMsg.value !== '') {
+            chatMsg.classList.remove('input-alert');
+        }
+    }
+
+    chatName.addEventListener('keyup', removeAlert);
+    chatMsg.addEventListener('keyup', removeAlert);
 }
